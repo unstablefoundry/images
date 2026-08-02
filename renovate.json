@@ -4,6 +4,8 @@
     "config:recommended",
     "helpers:pinGitHubActionDigests"
   ],
+  "platformAutomerge": true,
+  "automergeType": "pr",
   "packageRules": [
     {
       "description": "Automerge minor and patch updates after CI passes",
