@@ -1,0 +1,42 @@
+name: Release Please auto-merge
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - labeled
+
+permissions:
+  contents: read
+
+jobs:
+  automerge:
+    name: Auto-merge release-please PR
+    runs-on: ubuntu-latest
+    if: >
+      github.event.pull_request.user.login == vars.UF_AUTOMATIONS_BOT
+      && (
+        startsWith(github.event.pull_request.head.ref, 'release-please--')
+        || contains(github.event.pull_request.labels.*.name, 'autorelease: pending')
+      )
+    steps:
+      - name: Get GitHub App token
+        id: app_token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          client-id: ${{ secrets.UF_AUTOMATIONS_APP_ID }}
+          private-key: ${{ secrets.UF_AUTOMATIONS_APP_PRIVATEKEY }}
+
+      - name: Approve release PR
+        run: gh pr review --approve "$PR_URL"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ steps.app_token.outputs.token }}
+
+      - name: Enable auto-merge
+        run: gh pr merge --auto --squash "$PR_URL"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ steps.app_token.outputs.token }}

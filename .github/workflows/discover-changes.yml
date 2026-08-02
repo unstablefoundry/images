@@ -1,0 +1,53 @@
+name: Discover changes
+
+on:
+  workflow_call:
+    outputs:
+      images:
+        description: JSON array of image folder paths (relative) to process
+        value: ${{ jobs.changes.outputs.images }}
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      images: ${{ steps.images.outputs.images }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - id: images
+        run: |
+          images_list=()
+          while IFS= read -r dockerfile; do
+            img="${dockerfile%/Dockerfile}"
+            images_list+=("$img")
+          done < <(find . -type f -name Dockerfile \
+            ! -path './.git/*' \
+            ! -path './.github/*' \
+            | sed 's|^\./||' \
+            | sort)
+
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            changed=$(git diff --name-only "${{ github.event.pull_request.base.sha }}" "${{ github.sha }}")
+            filtered=()
+            for img in "${images_list[@]}"; do
+              grep -q "^${img}/" <<< "$changed" && filtered+=("$img")
+            done
+            images_list=("${filtered[@]}")
+          elif [[ "${{ github.event_name }}" != "workflow_dispatch" && "${{ github.event.before }}" != "0000000000000000000000000000000000000000" ]]; then
+            changed=$(git diff --name-only "${{ github.event.before }}" "${{ github.sha }}")
+            filtered=()
+            for img in "${images_list[@]}"; do
+              grep -q "^${img}/" <<< "$changed" && filtered+=("$img")
+            done
+            images_list=("${filtered[@]}")
+          fi
+
+          if ((${#images_list[@]})); then
+            images=$(printf '%s\n' "${images_list[@]}" | jq -R . | jq -s -c .)
+          else
+            images='[]'
+          fi
+          echo "images=$images" >> "$GITHUB_OUTPUT"
