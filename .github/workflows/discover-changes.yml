@@ -9,7 +9,7 @@ on:
 
 jobs:
   changes:
-    runs-on: homelab
+    runs-on: self-hosted
     outputs:
       images: ${{ steps.images.outputs.images }}
     steps:

@@ -14,7 +14,7 @@ permissions:
 jobs:
   automerge:
     name: Auto-merge release-please PR
-    runs-on: homelab
+    runs-on: self-hosted
     if: >
       github.event.pull_request.user.login == vars.UF_AUTOMATIONS_BOT
       && (
