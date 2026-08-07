@@ -16,6 +16,5 @@
       "matchUpdateTypes": ["major"],
       "automerge": true
     }
-  ],
-  "schedule": ["before 6am"]
+  ]
 }
