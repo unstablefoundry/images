@@ -53,3 +53,37 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - uses: rhysd/actionlint@914e7df21a07ef503a81201c76d2b11c789d3fca # v1.7.12
+
+  test-report:
+    if: always()
+    needs:
+      - changes
+      - hadolint
+      - build
+      - workflows
+    runs-on: ubuntu-latest
+    steps:
+      - name: Report results
+        env:
+          CHANGES_RESULT: ${{ needs.changes.result }}
+          HADOLINT_RESULT: ${{ needs.hadolint.result }}
+          BUILD_RESULT: ${{ needs.build.result }}
+          WORKFLOWS_RESULT: ${{ needs.workflows.result }}
+        run: |
+          {
+            echo "## Test report"
+            echo ""
+            echo "| Job | Result |"
+            echo "| --- | --- |"
+            echo "| changes | \`${CHANGES_RESULT}\` |"
+            echo "| hadolint | \`${HADOLINT_RESULT}\` |"
+            echo "| build | \`${BUILD_RESULT}\` |"
+            echo "| workflows | \`${WORKFLOWS_RESULT}\` |"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          for result in "$CHANGES_RESULT" "$HADOLINT_RESULT" "$BUILD_RESULT" "$WORKFLOWS_RESULT"; do
+            if [[ "$result" == "failure" || "$result" == "cancelled" ]]; then
+              echo "One or more jobs failed or were cancelled."
+              exit 1
+            fi
+          done
