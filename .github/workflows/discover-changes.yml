@@ -7,6 +7,9 @@ on:
         description: JSON array of image folder paths (relative) to process
         value: ${{ jobs.changes.outputs.images }}
 
+permissions:
+  contents: read
+
 jobs:
   changes:
     runs-on: self-hosted

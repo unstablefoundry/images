@@ -7,6 +7,9 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+
 jobs:
   changes:
     uses: ./.github/workflows/discover-changes.yml
