@@ -1,8 +1,13 @@
 # actions-runner/gh-cli
 
-[Actions Runner Controller](https://docs.github.com/en/actions/concepts/runners/actions-runner-controller) runner image based on [`ghcr.io/actions/actions-runner`](https://github.com/actions/runner/pkgs/container/actions-runner), with [GitHub CLI](https://cli.github.com/) (`gh`) installed.
+Runner image based on [`ghcr.io/actions/actions-runner`](https://github.com/actions/runner/pkgs/container/actions-runner), for use with [Actions Runner Controller](https://docs.github.com/en/actions/concepts/runners/actions-runner-controller).
 
-Published tag tracks the upstream runner version (no `VERSION` file).
+Installed on top of the base image:
+
+- [GitHub CLI](https://cli.github.com/) (`gh`)
+- [mikefarah/yq](https://github.com/mikefarah/yq)
+
+Published tag tracks the upstream runner version (no `VERSION` file). `:latest` tracks the newest build on `main`.
 
 ## Pull
 
