@@ -5,7 +5,6 @@ Runner image based on [`ghcr.io/actions/actions-runner`](https://github.com/acti
 Installed on top of the base image:
 
 - [GitHub CLI](https://cli.github.com/) (`gh`)
-- [mikefarah/yq](https://github.com/mikefarah/yq)
 
 Published tag tracks the upstream runner version (no `VERSION` file). `:latest` tracks the newest build on `main`.
 

@@ -14,9 +14,4 @@ RUN apt-get update -y \
   && apt-get install -y --no-install-recommends gh \
   && rm -rf /var/lib/apt/lists/*
 
-RUN arch="$(dpkg --print-architecture)" \
-  && curl -fsSL "https://github.com/mikefarah/yq/releases/latest/download/yq_linux_${arch}" \
-    -o /usr/local/bin/yq \
-  && chmod 755 /usr/local/bin/yq
-
 USER runner
