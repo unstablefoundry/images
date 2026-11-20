@@ -1,4 +1,4 @@
-FROM ghcr.io/berriai/litellm-migrations:v1.107.0
+FROM ghcr.io/berriai/litellm-migrations:1.110.2
 
 USER root
 
